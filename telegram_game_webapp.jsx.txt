@@ -1,0 +1,66 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+
+const mockChart = {
+  id: 1,
+  image: "/chart-partial.png",
+  answer: "up",
+  fullImage: "/chart-full.png",
+  explanation: "This was a bullish breakout after a consolidation."
+};
+
+export default function TelegramWebApp() {
+  const [step, setStep] = useState("guess");
+  const [selected, setSelected] = useState(null);
+  const [showExplanation, setShowExplanation] = useState(false);
+
+  const handleGuess = (direction) => {
+    setSelected(direction);
+    setStep("result");
+  };
+
+  const handleNext = () => {
+    setSelected(null);
+    setShowExplanation(false);
+    setStep("guess");
+    // Replace mockChart with next chart from dataset in real app
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-4 bg-gray-900 text-white">
+      <h1 className="text-xl font-bold">Chart Prediction</h1>
+
+      {step === "guess" && (
+        <Card className="w-full max-w-sm">
+          <CardContent className="flex flex-col items-center">
+            <img src={mockChart.image} alt="chart preview" className="mb-4 rounded" />
+            <div className="flex gap-4">
+              <Button onClick={() => handleGuess("up")} variant="success">📈 Up</Button>
+              <Button onClick={() => handleGuess("down")} variant="destructive">📉 Down</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {step === "result" && (
+        <Card className="w-full max-w-sm">
+          <CardContent className="flex flex-col items-center">
+            <p className="font-semibold mb-2">
+              {selected === mockChart.answer ? "✅ Correct!" : "❌ Wrong Guess"}
+            </p>
+            <img src={mockChart.fullImage} alt="full chart" className="mb-4 rounded" />
+            {!showExplanation ? (
+              <Button onClick={() => setShowExplanation(true)} variant="outline">Why?</Button>
+            ) : (
+              <p className="text-sm text-gray-400 text-center">
+                {mockChart.explanation}
+              </p>
+            )}
+            <Button onClick={handleNext} className="mt-4">Next</Button>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
